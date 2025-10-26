@@ -1,7 +1,7 @@
+// Arduino Nano - Nadajnik do sterowania dźwigiem RC
+// Wysyła dane z joysticka i przycisków przez RX/TX
 
-// Sends joystick and button data via RX/TX
-
-// Pin definitions
+// Definicje pinów
 #define JOY_X A1
 #define JOY_Y A0
 #define BTN_1 2
@@ -13,19 +13,19 @@
 #define BTN_7 8
 #define BTN_8 A2
 
-// Data packet structure
+// Struktura pakietu danych
 struct DataPacket {
-  int joyX;     // Joystick X axis (0-1023)
-  int joyY;     // Joystick Y axis (0-1023)
-  byte buttons; // 8 buttons packed into one byte
+  int joyX;     // Oś X joysticka (0-1023) - sterowanie serwem C
+  int joyY;     // Oś Y joysticka (0-1023) - sterowanie silnikiem platformy E
+  byte buttons; // 8 przycisków spakowanych w jeden bajt
 };
 
 DataPacket data;
 
 void setup() {
-  Serial.begin(9600); // HC-05 communication (default baud rate)
+  Serial.begin(9600); // Komunikacja Serial (TX/RX)
   
-  // Setup button pins with internal pull-up
+  // Konfiguracja pinów przycisków z wewnętrznym pull-up
   pinMode(BTN_1, INPUT_PULLUP);
   pinMode(BTN_2, INPUT_PULLUP);
   pinMode(BTN_3, INPUT_PULLUP);
@@ -35,60 +35,51 @@ void setup() {
   pinMode(BTN_7, INPUT_PULLUP);
   pinMode(BTN_8, INPUT_PULLUP);
   
-  delay(1000); // Wait for HC-05 to initialize
+  delay(1000); // Oczekiwanie na inicjalizację
 }
 
 void loop() {
-  // Read joystick values
+  // Odczyt wartości joysticka
   data.joyX = analogRead(JOY_X);
   data.joyY = analogRead(JOY_Y);
   
-  // Read buttons and pack into byte
-  /* data.buttons = 0;
-  if (!digitalRead(BTN_1)) data.buttons |= (1 << 0);
-  if (!digitalRead(BTN_2)) data.buttons |= (1 << 1);
-  if (!digitalRead(BTN_3)) data.buttons |= (1 << 2);
-  if (!digitalRead(BTN_4)) data.buttons |= (1 << 3);
-  if (!digitalRead(BTN_5)) data.buttons |= (1 << 4);
-  if (!digitalRead(BTN_6)) data.buttons |= (1 << 5);
-  if (!digitalRead(BTN_7)) data.buttons |= (1 << 6);
-  if (!digitalRead(BTN_8)) data.buttons |= (1 << 7); */
+  // Odczyt przycisków i pakowanie do bajtu
   
   data.buttons = 0;
 
-  // Motor A (bits 0 and 1)
+  // Silnik A - obrót wieży (bity 0 i 1)
   bool btn1 = !digitalRead(BTN_1);
   bool btn2 = !digitalRead(BTN_2);
   if (btn1 && !btn2) data.buttons |= (1 << 0);
   else if (btn2 && !btn1) data.buttons |= (1 << 1);
 
-  // Motor B (bits 2 and 3)
+  // Silnik B - wysięgnik góra/dół (bity 2 i 3)
   bool btn3 = !digitalRead(BTN_3);
   bool btn4 = !digitalRead(BTN_4);
   if (btn3 && !btn4) data.buttons |= (1 << 2);
   else if (btn4 && !btn3) data.buttons |= (1 << 3);
 
-  // Motor V (bits 4 and 5)
+  // Silnik V - długość wysięgnika (bity 4 i 5)
   bool btn5 = !digitalRead(BTN_5);
   bool btn6 = !digitalRead(BTN_6);
   if (btn5 && !btn6) data.buttons |= (1 << 4);
   else if (btn6 && !btn5) data.buttons |= (1 << 5);
 
-  // Motor G (bits 6 and 7)
+  // Silnik G - wciągarka (bity 6 i 7)
   bool btn7 = !digitalRead(BTN_7);
   bool btn8 = !digitalRead(BTN_8);
   if (btn7 && !btn8) data.buttons |= (1 << 6);
   else if (btn8 && !btn7) data.buttons |= (1 << 7);
   
-  // Send data packet via HC-05
-  // Format: "X:value,Y:value,B:value\n"
+  // Wysyłanie pakietu danych przez Serial
+  // Format: "X:wartość,Y:wartość,B:wartość\n"
   Serial.print("X:");
   Serial.print(data.joyX);
   Serial.print(",Y:");
   Serial.print(data.joyY);
   Serial.print(",B:");
   Serial.print(data.buttons, BIN);
-  Serial.println(); // End of packet marker
+  Serial.println(); // Znacznik końca pakietu
   
-  delay(250);// Send data every 250ms
+  delay(250); // Wysyłanie danych co 250ms
 }
