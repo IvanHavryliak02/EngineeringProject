@@ -61,8 +61,8 @@ void loop() {
   Serial.print(",Y:");
   Serial.print(data.joyY);
   Serial.print(",B:");
-  Serial.print(data.buttons);
+  Serial.print(data.buttons, BIN);
   Serial.println(); // End of packet marker
   
-  delay(50); // Send data every 50ms
+  delay(250);// Send data every 250ms
 }

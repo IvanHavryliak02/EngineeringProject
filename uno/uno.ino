@@ -25,8 +25,8 @@
 #define SERVO_C_PIN 3
 
 // Constants
-#define DEADZONE_MIN 487
-#define DEADZONE_MAX 537
+#define DEADZONE_MIN 482
+#define DEADZONE_MAX 542
 #define PWM_MAX 255
 #define SERVO_MIN 0
 #define SERVO_MAX 180
@@ -104,7 +104,9 @@ void parseReceivedData() {
   if (xIndex != -1 && yIndex != -1 && bIndex != -1) {
     receivedData.joyX = inputString.substring(xIndex + 2, yIndex).toInt();
     receivedData.joyY = inputString.substring(yIndex + 3, bIndex).toInt();
-    receivedData.buttons = inputString.substring(bIndex + 3).toInt();
+    //receivedData.buttons = inputString.substring(bIndex + 3).toInt();
+    String bits = inputString.substring(bIndex + 3);
+    receivedData.buttons = strtol(bits.c_str(), NULL, 2);
   }
 }
 
@@ -226,6 +228,7 @@ void controlServo() {
     if (joyX > DEADZONE_MAX) {
       // Map 537-1023 to 90-180
       servoAngle = map(joyX, DEADZONE_MAX, 1023, 90, 180);
+
     } else {
       // Map 0-487 to 0-90
       servoAngle = map(joyX, 0, DEADZONE_MIN, 0, 90);

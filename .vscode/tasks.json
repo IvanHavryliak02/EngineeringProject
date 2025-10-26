@@ -26,7 +26,7 @@
       "id": "sketchBase",
       "type": "promptString",
       "description": "Enter the sketch name without extension",
-      "default": "main"
+      "default": "nano"
     }
   ]
 }
