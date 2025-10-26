@@ -1,0 +1,32 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Compile Arduino",
+      "type": "shell",
+      "command": "arduino-cli",
+      "args": [
+          "compile",
+          "--fqbn",
+          "arduino:avr:${input:sketchBase}",
+          "--output-dir",
+          "${workspaceFolder}\\${input:sketchBase}",
+          "--export-binaries",
+          "${workspaceFolder}\\${input:sketchBase}"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "sketchBase",
+      "type": "promptString",
+      "description": "Enter the sketch name without extension",
+      "default": "main"
+    }
+  ]
+}
