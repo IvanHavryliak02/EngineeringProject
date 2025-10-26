@@ -1,4 +1,0 @@
-# ignore all node_modules in all subfolders
-
-**/Project-backups
-
