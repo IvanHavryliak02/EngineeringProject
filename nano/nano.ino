@@ -44,7 +44,7 @@ void loop() {
   data.joyY = analogRead(JOY_Y);
   
   // Read buttons and pack into byte
-  data.buttons = 0;
+  /* data.buttons = 0;
   if (!digitalRead(BTN_1)) data.buttons |= (1 << 0);
   if (!digitalRead(BTN_2)) data.buttons |= (1 << 1);
   if (!digitalRead(BTN_3)) data.buttons |= (1 << 2);
@@ -52,7 +52,33 @@ void loop() {
   if (!digitalRead(BTN_5)) data.buttons |= (1 << 4);
   if (!digitalRead(BTN_6)) data.buttons |= (1 << 5);
   if (!digitalRead(BTN_7)) data.buttons |= (1 << 6);
-  if (!digitalRead(BTN_8)) data.buttons |= (1 << 7);
+  if (!digitalRead(BTN_8)) data.buttons |= (1 << 7); */
+  
+  data.buttons = 0;
+
+  // Motor A (bits 0 and 1)
+  bool btn1 = !digitalRead(BTN_1);
+  bool btn2 = !digitalRead(BTN_2);
+  if (btn1 && !btn2) data.buttons |= (1 << 0);
+  else if (btn2 && !btn1) data.buttons |= (1 << 1);
+
+  // Motor B (bits 2 and 3)
+  bool btn3 = !digitalRead(BTN_3);
+  bool btn4 = !digitalRead(BTN_4);
+  if (btn3 && !btn4) data.buttons |= (1 << 2);
+  else if (btn4 && !btn3) data.buttons |= (1 << 3);
+
+  // Motor V (bits 4 and 5)
+  bool btn5 = !digitalRead(BTN_5);
+  bool btn6 = !digitalRead(BTN_6);
+  if (btn5 && !btn6) data.buttons |= (1 << 4);
+  else if (btn6 && !btn5) data.buttons |= (1 << 5);
+
+  // Motor G (bits 6 and 7)
+  bool btn7 = !digitalRead(BTN_7);
+  bool btn8 = !digitalRead(BTN_8);
+  if (btn7 && !btn8) data.buttons |= (1 << 6);
+  else if (btn8 && !btn7) data.buttons |= (1 << 7);
   
   // Send data packet via HC-05
   // Format: "X:value,Y:value,B:value\n"
